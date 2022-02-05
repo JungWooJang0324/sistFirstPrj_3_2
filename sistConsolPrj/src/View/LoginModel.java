@@ -1,7 +1,6 @@
 package View;
 
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
@@ -53,8 +52,7 @@ public class LoginModel extends JFrame{
 		
 		//로그인 엔터처리
 		id.registerKeyboardAction(loginEvt, "login", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
-		pw.registerKeyboardAction(loginEvt, "login", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-				JComponent.WHEN_FOCUSED);
+		pw.registerKeyboardAction(loginEvt, "login", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
 
 		setLayout(null);
 		idLabel.setBounds(30, 100, 130, 50);

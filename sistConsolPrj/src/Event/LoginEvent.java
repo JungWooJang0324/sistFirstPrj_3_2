@@ -1,18 +1,15 @@
 package Event;
 
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JOptionPane;
 
 import View.LoginModel;
+import View.testModel;
 
-@SuppressWarnings("serial")
 public class LoginEvent extends WindowAdapter implements ActionListener{
 	private LoginModel loginModel;
 	private String rootOrAd;
@@ -35,26 +32,30 @@ public class LoginEvent extends WindowAdapter implements ActionListener{
 
 			//기본 
 			if(pressId.equals("admin")&& pressPw.equals("1234")) {
-				JOptionPane.showMessageDialog(null, "로그인 성공!");
+				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
 				this.rootOrAd = "일반";
+				System.out.println(getRootOrAd());
 			}
 			else if(pressId.equals("administrator") && pressPw.equals("12345")) {
-				JOptionPane.showMessageDialog(null, "로그인 성공!");
+				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
 				this.rootOrAd  = "일반";				
 			} 
 			//관리자 계정
 			else if(pressId.equals("root") && pressPw.equals("1111")) {
-				JOptionPane.showMessageDialog(null, "로그인 성공!");
+				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
 				this.rootOrAd  = "관리자";				
 				
 			}else {
-				JOptionPane.showMessageDialog(null, "로그인 실패!");				
+				JOptionPane.showMessageDialog(loginModel, "로그인 실패!");				
 			}
-		
+			new testModel(loginModel, this);				
 		}
+				
 	}
 
 	public String getRootOrAd() {
 		return rootOrAd;
 	}
+
+
 }
