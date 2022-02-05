@@ -7,8 +7,8 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JOptionPane;
 
+import LogDialog.LogDialog;
 import View.LoginModel;
-import View.testModel;
 
 public class LoginEvent extends WindowAdapter implements ActionListener{
 	private LoginModel loginModel;
@@ -48,7 +48,7 @@ public class LoginEvent extends WindowAdapter implements ActionListener{
 			}else {
 				JOptionPane.showMessageDialog(loginModel, "로그인 실패!");				
 			}
-			new testModel(loginModel, this);				
+			new LogDialog(loginModel, this);				
 		}
 				
 	}
