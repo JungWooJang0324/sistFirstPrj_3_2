@@ -1,0 +1,173 @@
+package Event;
+
+import java.awt.FileDialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+
+import View.LogDialog;
+
+
+public class DialogEvent extends WindowAdapter implements ActionListener {
+	private LogDialog ld;
+	private int first,last;
+	private int code200,code403,code404,code500;
+	private double code403pct,code500pct;
+	private String filePath, fileName;
+	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
+	private int[] cnt = new int[langList.length];
+	private Map<String, Integer> countLang = new HashMap<String, Integer>();
+	private String maxCntKey;
+	
+	public DialogEvent(LogDialog ld) {
+		this.ld=ld;
+	}
+	
+	@Override
+	public void windowClosing(WindowEvent we) {
+		ld.dispose();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		//REPORT 버튼이 눌렸을 때
+		if(ae.getSource()==ld.getJbtnReport()) {
+			//아이디가 root면 오류메세지 생성
+			if(ld.getGroa().equals("관리자"))
+				JOptionPane.showMessageDialog(ld,"문서를 생성할 수 있는 권한이 없음");
+			}else {
+				//root 이외 사용자는 폴더 및 파일 생성
+				File folder=new File("c:/dev/report/");
+				folder.mkdirs();
+				SimpleDateFormat sfm=new SimpleDateFormat("yyyyMMdd");
+				Date date=new Date();
+				String fmt=sfm.format(date);
+				File outFile=new File("c:/dev/report/report_"+fmt+".dat");
+				
+				FileWriter of=null;
+				
+				try {
+					of=new FileWriter(outFile);
+					of.write("");
+					of.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+		    
+				}//catch
+			}//if else
+		
+		
+		
+		//LINE 버튼이 눌렸을 때
+		if(ae.getSource()==ld.getJbtnLine()) {
+			first=Integer.parseInt(ld.getJtxfFir().getText());
+			last=Integer.parseInt(ld.getJtxfLast().getText());
+		}//if
+		
+		//View버튼 눌렸을때 
+		if(ae.getSource() == ld.getJbtnView()) {
+			selectLogFile();
+			
+		}//if
+	
+	}//actionPerformed
+	
+	
+	//파일선택 method
+	public void selectLogFile() {
+		FileDialog fd = new FileDialog(ld, "log파일 선택", FileDialog.LOAD);
+		fd.setVisible(true);
+		
+		String selPath =  fd.getDirectory();
+		fileName = fd.getFile();
+		int lastFileidx;
+		
+		if(fileName == null) {
+			JOptionPane.showMessageDialog(fd, "파일을 선택해주세요");
+		}else {
+			lastFileidx = fileName.length();
+			if(fileName.substring(lastFileidx-4, lastFileidx).equals(".log")) {
+				//파일 선택
+				filePath = selPath+fileName;
+				try {
+					logAnalyze();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				JOptionPane.showMessageDialog(fd, "로그파일을 선택해 주세요.");
+			}
+		}
+	}//selectLogFile
+	
+	//로그파일 분석
+	public void logAnalyze() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		String fileContext="";
+		while((fileContext = br.readLine())!= null) {
+			keyLang(fileContext);
+		}
+	}
+	
+	//키값=java... 구하기
+	public void keyLang(String fileContext) {
+		String key;
+		if(fileContext.contains("key")) {
+			key = fileContext.substring(fileContext.indexOf("=")+1,fileContext.indexOf("&"));
+			for(int i=0; i<langList.length;i++) {
+				if(key.equals(langList[i])){
+					countLang.put(langList[i], cnt[i]++);
+				}//if
+			}//for
+		}//if	
+	}
+	
+	//최대갯수 구하기
+	public void maxCntLang() {
+		int maxVal = (Collections.max(countLang.values()));
+		for(String key: countLang.keySet()) {
+			Integer value= countLang.get(key);
+			if(value == maxVal) {
+				maxCntKey = key;
+			}
+		}
+		
+		
+	}
+	public void hourCount(String temp) {
+		
+	}
+	
+	public void stateCount(String temp) {
+		int state=Integer.parseInt(temp.substring(temp.indexOf("[")+1),temp.substring(temp.indexOf("]")));
+		if(state==200) {
+			code200++;
+		}else if(state==403) {
+			code403++;
+		}else if(state==404) {
+			code404++;
+		}else if(state==500) {
+			code500++;
+		}
+		code403pct=(state*100)/code403;
+		code500pct=(state*100)/code500;
+	}
+
+}//class
+
+
