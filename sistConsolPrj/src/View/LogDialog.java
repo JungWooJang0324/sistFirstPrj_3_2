@@ -18,7 +18,6 @@ public class LogDialog extends JDialog {
 	public LogDialog(LoginModel lm,LoginEvent le) {
 		super(lm,"LogDialog",true);
 		
-		JOptionPane.showMessageDialog(lm,le.getRootOrAd()+"계정입니다.");
 		groa=le.getRootOrAd();
 		
 		jbtnView=new JButton("V I E W");
@@ -45,6 +44,7 @@ public class LogDialog extends JDialog {
 		jbtnView.addActionListener(de);
 		jbtnReport.addActionListener(de);
 		jbtnLine.addActionListener(de);
+		addWindowListener(de);
 		
 		jbtnView.setBounds(40,250,100,50);
 		jbtnReport.setBounds(190,250,100,50);
@@ -56,7 +56,6 @@ public class LogDialog extends JDialog {
 		
 		setBounds(lm.getX()+100, lm.getY()+100, 350,400);
 		setVisible(true);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 
 	public JButton getJbtnView() {
