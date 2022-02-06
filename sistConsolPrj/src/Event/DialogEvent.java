@@ -5,11 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -20,6 +27,10 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private LogDialog ld;
 	private int first,last;
 	private String filePath, fileName;
+	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
+	private int[] cnt = new int[langList.length];
+	private Map<String, Integer> countLang = new HashMap<String, Integer>();
+	private String maxCntKey;
 	
 	public DialogEvent(LogDialog ld) {
 		this.ld=ld;
@@ -91,14 +102,51 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 			if(fileName.substring(lastFileidx-4, lastFileidx).equals(".log")) {
 				//파일 선택
 				filePath = selPath+fileName;
+				try {
+					logAnalyze();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}else{
 				JOptionPane.showMessageDialog(fd, "로그파일을 선택해 주세요.");
 			}
 		}
 	}//selectLogFile
 	
-	 
+	//로그파일 분석
+	public void logAnalyze() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		String fileContext="";
+		while((fileContext = br.readLine())!= null) {
+			keyLang(fileContext);
+		}
+	}
 	
+	//키값=java... 구하기
+	public void keyLang(String fileContext) {
+		String key;
+		if(fileContext.contains("key")) {
+			key = fileContext.substring(fileContext.indexOf("=")+1,fileContext.indexOf("&"));
+			for(int i=0; i<langList.length;i++) {
+				if(key.equals(langList[i])){
+					countLang.put(langList[i], cnt[i]++);
+				}//if
+			}//for
+		}//if	
+	}
+	
+	//최대갯수 구하기
+	public void maxCntLang() {
+		int maxVal = (Collections.max(countLang.values()));
+		for(String key: countLang.keySet()) {
+			Integer value= countLang.get(key);
+			if(value == maxVal) {
+				maxCntKey = key;
+			}
+		}
+		
+		
+	}
 
 }//class
 
