@@ -1,24 +1,25 @@
-package LogDialog;
+package View;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import Event.LoginEvent;
 import Event.DialogEvent;
-import View.LoginModel;
 
 @SuppressWarnings("serial")
 public class LogDialog extends JDialog {
 	private JButton jbtnView,jbtnReport,jbtnLine;
 	private JTextField jtxfFir,jtxfLast;
 	private JLabel jlblFir,jlblLast;
-	
+	private String groa;
 	public LogDialog(LoginModel lm,LoginEvent le) {
 		super(lm,"LogDialog",true);
 		
-		System.out.println(le.getRootOrAd()+"계정입니다.");
+		JOptionPane.showMessageDialog(lm,le.getRootOrAd()+"계정입니다.");
+		groa=le.getRootOrAd();
 		
 		jbtnView=new JButton("V I E W");
 		jbtnReport=new JButton("R E P O R T");
@@ -76,6 +77,10 @@ public class LogDialog extends JDialog {
 
 	public JTextField getJtxfLast() {
 		return jtxfLast;
+	}
+
+	public String getGroa() {
+		return groa;
 	}
 
 }

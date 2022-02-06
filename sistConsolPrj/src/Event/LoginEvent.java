@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JOptionPane;
 
-import LogDialog.LogDialog;
+import View.LogDialog;
 import View.LoginModel;
 
 public class LoginEvent extends WindowAdapter implements ActionListener{
