@@ -7,19 +7,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -31,17 +26,20 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private int first,last;
 	private int mode;
 	private int code200,code403,code404,code500;
+	//줄번호 
+	private int lineCnt;
 	private double code403pct,code500pct;
 	private String filePath, fileName;
 	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
 	private String[] browserList= {"opera", "ie", "firefox", "Chrome", "Safari" };
 	private int[] cnt = new int[langList.length];
 	private int[] browserCnt = new int[browserList.length];
-	private double[] browserPercent = new double[browserList.length];
-	
+	private double[] browserPercent = new double[browserList.length];	
 	private Map<String, Integer> countLang = new HashMap<String, Integer>();
 	private Map<String, Integer> browser = new HashMap<String, Integer>();
+	private Map<String, Integer> cntFromInput = new HashMap<String, Integer>();	
 	private String maxCntKey;
+	private String maxCntKeyFromInput;
 	
 	public DialogEvent(LogDialog ld) {
 		this.ld=ld;
@@ -86,20 +84,20 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 		//LINE 버튼이 눌렸을 때
 		if(ae.getSource()==ld.getJbtnLine()) {
-			if(ld.getJtxfFir().getText().equals("")) {
-				first = 0;
-			}
-			else if(ld.getJtxfLast().getText().equals("")) {
-				JOptionPane.showMessageDialog(ld, "마지막줄을 써주세요");
-			}//if
-			else {
+		
+			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
-				last=Integer.parseInt(ld.getJtxfLast().getText());
-			}
+				last=Integer.parseInt(ld.getJtxfLast().getText());				
+			}			
+			if(ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
+				first = 0;
+				last=Integer.parseInt(ld.getJtxfLast().getText());				
+			}			
+			if(ld.getJtxfLast().getText().isEmpty()) {
+				JOptionPane.showMessageDialog(ld, "찾으실 마지막줄을 써주세요");
+			}//if
 			
-			System.out.println(first);
-			System.out.println(last);
-			
+			selectLogFile();
 			
 		}//if
 		
@@ -144,8 +142,15 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String fileContext="";
 		while((fileContext = br.readLine())!= null) {
+			lineCnt++;
 			keyLang(fileContext);
 			browserCnt(fileContext);
+			stateCount(fileContext);
+			hourCount(fileContext);
+			if(lineCnt>=first && lineCnt<=last) {
+				maxKeysFromInput(fileContext);
+			}
+
 		}
 	}
 	
@@ -230,10 +235,94 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		code500pct=(state*100)/code500;
 	}
 	
-	//7번 입력된줄에 맞춰서 구하기
+	//7 줄행의 수 중 최다키 구하기
+	public void maxKeysFromInput(String fileContext) {
+		String key ="";
+		if(fileContext.contains("key")) {
+			key = fileContext.substring(fileContext.indexOf("=")+1,fileContext.indexOf("&"));
+			cntFromInput.put(key, cntFromInput.get(key)!=null ? cntFromInput.get(key)+1 : 1);
+		}//if
+		
+		int maxVal = (Collections.max(cntFromInput.values()));
+		for(String keys: cntFromInput.keySet()) {
+			if(cntFromInput.get(keys) == maxVal) {
+				maxCntKeyFromInput = keys;
+			}
+		}
+		System.out.println("최다 키: "+maxCntKeyFromInput);
+		System.out.println(cntFromInput.get(maxCntKeyFromInput)+"회");
+		
+	}
+
+	//getter
+	//첫번째 입력된 줄
+	public int getFirst() {
+		return first;
+	}
 	
+	//마지막줄
+	public int getLast() {
+		return last;
+	}
+
+	//최다 사용시간
+	public int getMode() {
+		return mode;
+	}
+
+	public int getCode200() {
+		return code200;
+	}
+
+	public int getCode403() {
+		return code403;
+	}
+
+	public int getCode404() {
+		return code404;
+	}
+
+	public int getCode500() {
+		return code500;
+	}
+	
+	//줄 갯수
+	public int getLineCnt() {
+		return lineCnt;
+	}
+
+	public double getCode403pct() {
+		return code403pct;
+	}
+
+	public double getCode500pct() {
+		return code500pct;
+	}
+
+	//브라우저별 퍼센트리스트
+	public double[] getBrowserPercent() {
+		return browserPercent;
+	}
+	//요청받은 처음부터 끝까지
+	public Map<String, Integer> getCntFromInput() {
+		return cntFromInput;
+	}
+	
+	//최대로 불린 키
+	public String getMaxCntKey() {
+		return maxCntKey;
+	}
+
+	//선택값에서 최대로 불린 키
+	public String getMaxCntKeyFromInput() {
+		return maxCntKeyFromInput;
+	}
+	
+	
+	//getters
 	
 	
 }//class
+
 
 
