@@ -1,10 +1,13 @@
 package View;
 
+import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import Event.LoginEvent;
 import Event.DialogEvent;
@@ -45,6 +48,8 @@ public class LogDialog extends JDialog {
 		jbtnReport.addActionListener(de);
 		jbtnLine.addActionListener(de);
 		addWindowListener(de);
+		
+		jtxfLast.registerKeyboardAction(de,"LINE", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
 		
 		jbtnView.setBounds(40,250,100,50);
 		jbtnReport.setBounds(190,250,100,50);

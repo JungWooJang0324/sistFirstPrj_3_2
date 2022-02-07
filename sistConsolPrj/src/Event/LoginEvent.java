@@ -35,27 +35,28 @@ public class LoginEvent extends WindowAdapter implements ActionListener{
 				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
 				this.rootOrAd = "일반";
 				System.out.println(getRootOrAd());
+				new LogDialog(loginModel, this);
 			}
 			else if(pressId.equals("administrator") && pressPw.equals("12345")) {
 				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
 				this.rootOrAd  = "일반";				
+				new LogDialog(loginModel, this);
 			} 
 			//관리자 계정
 			else if(pressId.equals("root") && pressPw.equals("1111")) {
 				JOptionPane.showMessageDialog(loginModel, "로그인 성공!");
-				this.rootOrAd  = "관리자";				
-				
+				this.rootOrAd  = "관리자";
+				new LogDialog(loginModel, this);
+			//로그인 실패
 			}else {
-				JOptionPane.showMessageDialog(loginModel, "로그인 실패!");				
+				JOptionPane.showMessageDialog(loginModel, "로그인 실패!");	
 			}
-			new LogDialog(loginModel, this);				
 		}
 				
 	}
-
+	
 	public String getRootOrAd() {
 		return rootOrAd;
+	
 	}
-
-
 }

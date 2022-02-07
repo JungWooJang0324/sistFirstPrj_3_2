@@ -83,8 +83,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 		
 		//LINE 버튼이 눌렸을 때
-		if(ae.getSource()==ld.getJbtnLine()) {
-		
+		if(ae.getSource()==ld.getJbtnLine() || ae.getSource()==ld.getJtxfLast()) {
 			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
@@ -139,6 +138,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	
 	//로그파일 분석
 	public void logAnalyze() throws IOException {
+		@SuppressWarnings("resource")
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		String fileContext="";
 		while((fileContext = br.readLine())!= null) {
