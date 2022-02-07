@@ -7,14 +7,19 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -29,8 +34,13 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private double code403pct,code500pct;
 	private String filePath, fileName;
 	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
+	private String[] browserList= {"opera", "ie", "firefox", "Chrome", "Safari" };
 	private int[] cnt = new int[langList.length];
+	private int[] browserCnt = new int[browserList.length];
+	private double[] browserPercent = new double[browserList.length];
+	
 	private Map<String, Integer> countLang = new HashMap<String, Integer>();
+	private Map<String, Integer> browser = new HashMap<String, Integer>();
 	private String maxCntKey;
 	
 	public DialogEvent(LogDialog ld) {
@@ -76,8 +86,21 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 		//LINE 버튼이 눌렸을 때
 		if(ae.getSource()==ld.getJbtnLine()) {
-			first=Integer.parseInt(ld.getJtxfFir().getText());
-			last=Integer.parseInt(ld.getJtxfLast().getText());
+			if(ld.getJtxfFir().getText().equals("")) {
+				first = 0;
+			}
+			else if(ld.getJtxfLast().getText().equals("")) {
+				JOptionPane.showMessageDialog(ld, "마지막줄을 써주세요");
+			}//if
+			else {
+				first=Integer.parseInt(ld.getJtxfFir().getText());
+				last=Integer.parseInt(ld.getJtxfLast().getText());
+			}
+			
+			System.out.println(first);
+			System.out.println(last);
+			
+			
 		}//if
 		
 		//View버튼 눌렸을때 
@@ -122,6 +145,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		String fileContext="";
 		while((fileContext = br.readLine())!= null) {
 			keyLang(fileContext);
+			browserCnt(fileContext);
 		}
 	}
 	
@@ -136,9 +160,10 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				}//if
 			}//for
 		}//if	
+		maxCntLang();
 	}
 	
-	//최대갯수 구하기
+	//1 . 최대갯수 구하기
 	public void maxCntLang() {
 		int maxVal = (Collections.max(countLang.values()));
 		for(String key: countLang.keySet()) {
@@ -147,9 +172,30 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				maxCntKey = key;
 			}
 		}
-		
-		
 	}
+	
+	//2. 브라우저별 접속횟수
+	public void browserCnt(String fileContext) {
+		for(int i=0; i<browserList.length; i++) {
+			if(fileContext.contains(browserList[i])) {
+				browserCnt[i]++;
+				browser.put(browserList[i], browserCnt[i]);
+			}
+		}
+		browserAnalyze();
+	}
+	
+	//2. 브라우저별 % 통계
+	public void browserAnalyze() {
+		int maxCnt = 0;
+		for(int i=0; i<browserCnt.length; i++) {
+			maxCnt+= browserCnt[i];
+		}
+		for(int i=0; i<browserCnt.length;i++) {
+			browserPercent[i] = (double)(browserCnt[i]*100)/maxCnt;
+			System.out.printf("%.2f\n", browserPercent[i]);
+		}
+	}	
 	//4.최다 사용시간
 	public void hourCount(String fileContext) {
 		//로그 시간구해 배열에 저장
@@ -183,7 +229,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		code403pct=(state*100)/code403;
 		code500pct=(state*100)/code500;
 	}
-
+	
+	//7번 입력된줄에 맞춰서 구하기
+	
+	
+	
 }//class
 
 
