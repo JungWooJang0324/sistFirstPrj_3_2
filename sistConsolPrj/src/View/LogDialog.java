@@ -1,11 +1,14 @@
 package View;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
@@ -33,7 +36,7 @@ public class LogDialog extends JDialog {
 		jlblFir=new JLabel("First");
 		jlblLast=new JLabel("Last");
 		setLayout(null);
-		
+
 		add(jbtnView);
 		add(jbtnReport);
 		add(jlblFir);
@@ -44,15 +47,16 @@ public class LogDialog extends JDialog {
 		add(jbtnLine);
 		
 		DialogEvent de=new DialogEvent(this);
+		jtxfFir.registerKeyboardAction(de, "firLastInput", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
+		jtxfLast.registerKeyboardAction(de, "firLastInput", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
+
 		jbtnView.addActionListener(de);
 		jbtnReport.addActionListener(de);
 		jbtnLine.addActionListener(de);
 		addWindowListener(de);
 		
-		jtxfLast.registerKeyboardAction(de,"LINE", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_FOCUSED);
-		
-		jbtnView.setBounds(40,250,100,50);
-		jbtnReport.setBounds(190,250,100,50);
+		jbtnView.setBounds(40,250,120,50);
+		jbtnReport.setBounds(170,250,120,50);
 		jbtnLine.setBounds(40,160,250,50);
 		jlblFir.setBounds(70,50,30,30);
 		jlblLast.setBounds(70,100,30,30);

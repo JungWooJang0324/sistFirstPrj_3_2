@@ -23,17 +23,17 @@ import javax.swing.JOptionPane;
 
 import View.LogDialog;
 import View.Result;
-import View.testModel;
+import View.Result;
 
 
 public class DialogEvent extends WindowAdapter implements ActionListener {
 	private LogDialog ld;
 	private int first,last;
 	private String mode;
-	private int code200,code403,code404,code500;
+	private int code200,code403,code404,code500,state;
 	//줄번호 
 	private int lineCnt;
-	private double code403pct,code500pct;
+	private String code403pct, code500pct;
 	private String filePath, fileName;
 	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
 	private String[] browserList= {"opera", "ie", "firefox", "Chrome", "Safari" };
@@ -46,6 +46,9 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private Map<String, Integer> hourCnt = new HashMap<String, Integer>();	
 	private String maxCntKey;
 	private String maxCntKeyFromInput;
+	private boolean reportFlag;
+	private int maxVal;
+	
 	
 	public DialogEvent(LogDialog ld) {
 		this.ld=ld;
@@ -63,22 +66,25 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 			//아이디가 root면 오류메세지 생성
 			if(ld.getGroa().equals("관리자")) {
 				JOptionPane.showMessageDialog(ld,"문서를 생성할 수 있는 권한이 없음");
-			}else {
+			}else if(reportFlag != true) {
+				JOptionPane.showMessageDialog(ld,"문서를 생성하기 전에 VIEW나 LINE을 입력해서 실행해 주세요");				
+			}
+			else {
 				JOptionPane.showMessageDialog(ld,"파일이 생성되었습니다.");
 				
 				//root 이외 사용자는 폴더 및 파일 생성
 				File folder=new File("c:/dev/report/");
 				folder.mkdirs();
-				SimpleDateFormat sfm=new SimpleDateFormat("yyyyMMdd");
+				SimpleDateFormat sfm=new SimpleDateFormat("yyyyMMddHHmmss");
 				Date date=new Date();
 				String fmt=sfm.format(date);
 				File outFile=new File("c:/dev/report/report_"+fmt+".dat");
-				
+
 				FileWriter of=null;
 				
 				try {
 					of=new FileWriter(outFile);
-					of.write("");
+					of.write(btnReport());
 					of.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -92,7 +98,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		if(ae.getSource()==ld.getJbtnLine() || ae.getActionCommand().equals("firLastInput")) {
 			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
-				last=Integer.parseInt(ld.getJtxfLast().getText());				
+				last=Integer.parseInt(ld.getJtxfLast().getText());		
 				selectLogFile();
 				runLog();
 			}			
@@ -116,12 +122,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}//if
 	
 	}//actionPerformed
-	
+
 	public void runLog() {
 		try {
 			logAnalyze();
-			new testModel(this);
-//			new Result(this, ld);
+			new Result(this, ld);
 		}catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(ld, "파일을 선택해주세요!");
 		} catch(IOException e) {
@@ -156,11 +161,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				if(lineCnt>=first && lineCnt<=last) {
 					maxKeysFromInput(fileContext);
 				}
-				else if(lineCnt>=first && last == 0) {
+				if(first==0 && last == 0) {
 					maxKeysFromInput(fileContext);
-					
 				}
 			}
+			reportFlag =true;
 		}finally {
 			if(br != null) {
 				br.close();
@@ -223,7 +228,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		Set<String> setHour = hourCnt.keySet();
 		Iterator<String> iterator = setHour.iterator();
 		String hourKey = "";
-		int maxVal = 0;
+		maxVal = 0;
 		while(iterator.hasNext()) {
 			hourKey = iterator.next();
 			if(hourCnt.get(hourKey) > maxVal) {
@@ -234,7 +239,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	}
 	//3.5.6. 서비스 상태 횟수구하기
 	public void stateCount(String fileContext) {
-		int state= Integer.parseInt (fileContext.substring(fileContext.indexOf("[")+1, fileContext.indexOf("]")));
+		state= Integer.parseInt (fileContext.substring(fileContext.indexOf("[")+1, fileContext.indexOf("]")));
 		if(state==200) {
 			code200++;
 		}else if(state==403) {
@@ -244,7 +249,8 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}else if(state==500) {
 			code500++;
 		}
-		
+		code403pct= String.format("%4.2f", (code403 / (double)lineCnt) * 100);
+		code500pct= String.format("%4.2f", (code500 /(double)lineCnt) * 100);
 	}
 	
 	//7 줄행의 수 중 최다키 구하기
@@ -262,7 +268,32 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 			}
 		}
 	}
+	
+	
 
+	public String btnReport() {
+		
+		StringBuilder sb = new StringBuilder();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		Date d = new Date();
+		String s = sdf.format(d);
+		sb.append("1. 최다 사용키: ").append(maxCntKey).append(" ").append(countLang.get(maxCntKey)).append("회\n");
+		sb.append("\n");
+		sb.append("2. 브라우저별 접속 횟수와 비율 : \n");
+		for(int i=0; i<browserPercent.length; i++) {
+			sb.append(browserList[i]+" : "+browserCnt[i]+"회 ("+ String.format("%.2f", browserPercent[i])+"%) \n");
+		}
+		sb.append("\n\n");
+		sb.append("3. 서비스를 성공적으로 수행한(200)횟수,실패(404) 횟수\n").append("성공 횟수(200) : ").append(code200+"번").append("\n실패 횟수(404) : ").append(code404+"번\n");
+		sb.append("\n");
+		sb.append("4. 요청이 가장 많은 시간 :").append(maxVal);
+		sb.append("\n");
+		sb.append("5. 비정상적인 요청(403)이 발생한 횟수(%): ").append(code403+"번 (").append(code403pct+"%)");
+		sb.append("\n6. 요청에 대한 에러(500)가 발생한 횟수(%): ").append(code500+"번 (").append(code500pct+"%)");
+		sb.append("\n7. 입력된 값에 대한 키의 이름(횟수): ").append(maxCntKeyFromInput+" (").append(cntFromInput.get(maxCntKeyFromInput)+"회)");
+		
+		return sb.toString();
+	}
 	//getter
 	//첫번째 입력된 줄
 	public int getFirst() {
@@ -300,11 +331,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		return lineCnt;
 	}
 
-	public double getCode403pct() {
+	public String getCode403pct() {
 		return code403pct;
 	}
 
-	public double getCode500pct() {
+	public String getCode500pct() {
 		return code500pct;
 	}
 
@@ -334,7 +365,14 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	public String[] getBrowserList() {
 		return browserList;
 	}
-	
+
+	public int[] getBrowserCnt() {
+		return browserCnt;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
 	
 	//getters
 	

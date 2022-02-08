@@ -4,8 +4,8 @@ import View.LoginModel;
 
 public class RunApp {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		@SuppressWarnings("unused")
 		LoginModel lm = new LoginModel();
 	}
 

@@ -1,87 +1,92 @@
 package View;
 
-import java.awt.GridLayout;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.JButton;
+import java.awt.FileDialog;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+
 import Event.DialogEvent;
 
 @SuppressWarnings("serial")
 public class Result extends JDialog {
 	private DialogEvent  de;
-//	public JPanel browserInfo() {
-//		
-//		JPanel jpBrowser = new JPanel();
-//		jpBrowser.setOpaque(false);
-//		setLayout(new GridLayout(1, 5));
-//		
-//		JLabel[] jlBrowser = new JLabel[de.getBrowserList().length];
-//		Map<String, Integer> CntFromInput =de.getCntFromInput();
-//		
-//		StringBuilder content = new StringBuilder();
-//		
-//		Set<String> key = CntFromInput.keySet();
-//		Iterator<String> itKey = key.iterator();
-//		String Name = "";
-//		int i = 0;
-//		while (itKey.hasNext()) {
-//			Name = itKey.next();
-//
-//			content.append(Name).append(" : ").append(CntFromInput.get(Name)).append(" (");
-//					
-//			jlBrowser[i] = new JLabel(content.toString());
-//			jpBrowser.add(jlBrowser[i]);
-//			i++;
-//			content.delete(0, content.length());
-//			
-//			
-//		}//end while
-//		
-//		
-//		
-//		
-//		return jpBrowser;
-//		
-//	}//browserInfo
-//	
-	public Result(DialogEvent de, LogDialog ldl) {
-		super(ldl, "결과 출력", true);
-		this.de = de;
-		JPanel bgr = new JPanel();
-		bgr.setLayout(null);
-
-		JButton jbConfirm = new JButton("확인");
-		bgr.add(new JLabel("1. 최다 사용 key의 이름과 횟수")).setBounds(80, 50, 200, 50);
-		bgr.add(new JLabel(de.getMaxCntKey() + " : " + "번")).setBounds(380, 60, 200, 30);
-		bgr.add(new JLabel("2. 브라우저별 접속횟수, 비율")).setBounds(80, 130, 200, 50);
-		for(int i=0;i<de.getBrowserPercent().length; i++) {
-			bgr.add(new JLabel(String.valueOf(de.getBrowserPercent()[i])));
-		}
-		bgr.add(new JLabel("3. 서비스 성공(200) 실패(404) 횟수")).setBounds(80, 230, 200, 50);
-		bgr.add(new JLabel("성공(200) : " + de.getCode200() + ", 실패(404) : " + de.getCode404())).setBounds(380, 230, 200, 50);
-		bgr.add(new JLabel("4. 요청이 가장 많은 시간")).setBounds(80, 310, 200, 30);
-		bgr.add(new JLabel(de.getMode() + "시")).setBounds(380	, 310, 200,30);
-		bgr.add(new JLabel("5. 비정상 요청 횟수와 비율")).setBounds(80, 360, 200, 30);
-//		bgr.add(new JLabel(de.getCode403() +"("+ (de.getCode403() /de.getCode403pct()) +")%"+setBounds(380, 360, 200, 30));
-//		bgr.add(new JLabel(de.getCode403() +"("+ (de.getCode403() /de.getCode403pct()) +")%"+setBounds(380, 360, 200, 30));
-//		bgr.add(new JLabel("6. 요청에 대한 에러(500)가 발생한 횟수, 비율 구하기"
-//				+ "")).setBounds(80, 360, 200, 30);
-//		bgr.add(new JLabel(de.getCode500() + " ("+ String.format("%4.2f",de.getCode500() /de.getCode500pct() + "%)")).setBounds(380, 360, 200, 30));
-//		
-		
-		bgr.add(jbConfirm).setBounds(270, 450, 60, 30);
-		bgr.add(new JLabel("파일명")).setBounds(40, 5, 100, 50);
+	private LogDialog ld;
 	
-		setBounds(400, 300, 650, 530);
-		setResizable(false);
+	public Result(DialogEvent de ,LogDialog ld) {
+		super(ld,"자식창",true);
+		
+		this.de = de;
+		FileDialog fd = new FileDialog(ld, "log파일 선택", FileDialog.LOAD);
+		
+	
+		
+		JLabel jlblLine = new JLabel("==================================================");
+		JLabel jlblLine2 = new JLabel("==================================================");
+		JLabel jlblFileName=new JLabel("파일제목 :"+de.getFileName());
+		
+		
+		JLabel maxCntKey = new JLabel("1. 최다키 : " + de.getMaxCntKey());
+
+		SimpleDateFormat sfm=new SimpleDateFormat("yyyy:MM:dd: hh:mm a");
+		Date date=new Date();
+		String fmt=sfm.format(date);
+		JLabel createTime = new JLabel("생성 일시: "+fmt);
+		
+		JLabel browserCnt= new JLabel("2. 브라우저 횟수(%) :");
+		JPanel browserListpnl= new JPanel();
+
+		String msg="";
+		JLabel[] jlBrowserList = new JLabel[de.getBrowserList().length];
+		for (int i = 0; i < de.getBrowserPercent().length; i++) {
+			 jlBrowserList[i] = new JLabel(de.getBrowserList()[i]+" :" +de.getBrowserCnt()[i]+"회 ("+String.format("%.2f",de.getBrowserPercent()[i])+"%)");
+		}//end for
+		for(int i=0; i<jlBrowserList.length;i++) {
+			browserListpnl.add(jlBrowserList[i]);
+		}
+		
+		JLabel successnFail = new JLabel("3. [200] 성공 발생횟수 : " + de.getCode200()+"회"+"  |   [400] 실패횟수 : "+de.getCode404()+"회");
+		JLabel maxHour = new JLabel("4. 최다 시간 (횟수): " + de.getMode()+"시"+" (" + de.getHourCnt().get(de.getMode())+"회)");
+		JLabel code403 = new JLabel("5. 403error 발생횟수(%) :" + de.getCode403()+"회 ("+de.getCode403pct()+"%)");
+		JLabel code500 = new JLabel("6. 500error 발생횟수(%) :" + de.getCode500()+"회 ("+de.getCode500pct()+"%)");
+		JLabel inputMax = new JLabel("7. 선택된 줄의 최다키(횟수) : " + de.getMaxCntKeyFromInput()+" ("+de.getCntFromInput().get(de.getMaxCntKeyFromInput()) + "회)");
+		
+		setLayout(null);
+		add(jlblLine);
+		add(createTime);
+		add(jlblFileName);
+		add(jlblLine2);
+		add(maxCntKey);
+		add(browserCnt);
+		add(browserListpnl);
+		add(successnFail);
+		add(maxHour);
+		add(code403);
+		add(code500);
+		add( inputMax);
+
+		jlblLine.setBounds(20,5,600,30);
+		jlblFileName.setBounds(20, 30, 200, 25);
+		createTime.setBounds(200, 17, 200, 50);
+		jlblLine2.setBounds(20,45,600,30);
+		maxCntKey.setBounds(20, 70, 200, 30);
+		browserCnt.setBounds(20, 100, 200, 30);
+		browserListpnl.setBounds(60, 130, 170, 100);
+		successnFail.setBounds(20, 250, 400, 30);
+		maxHour.setBounds(20, 290, 200, 30);
+		code403.setBounds(20, 340, 200, 30);
+		code500.setBounds(20, 390, 200, 30);
+		inputMax.setBounds(20, 420, 400, 30);
+		
+		setBounds(100, 100, 450, 600);
 		setVisible(true);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 
-}//Result
+	}
 }
