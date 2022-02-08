@@ -89,41 +89,45 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 		
 		//LINE 버튼이 눌렸을 때
-		if(ae.getSource()==ld.getJbtnLine() || ae.getSource()==ld.getJtxfLast()) {
+		if(ae.getSource()==ld.getJbtnLine() || ae.getActionCommand().equals("firLastInput")) {
 			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
-				selectLogFile();				
+				selectLogFile();
+				runLog();
 			}			
 			if(ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first = 0;
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
 				selectLogFile();				
+				runLog();
 			}			
 			if(ld.getJtxfLast().getText().isEmpty()) {
 				JOptionPane.showMessageDialog(ld, "찾으실 마지막줄을 써주세요");
 			}//if
-			
 			
 		}//if
 		
 		//View버튼 눌렸을때 
 		if(ae.getSource() == ld.getJbtnView()) {
 			selectLogFile();	
-			try {
-				logAnalyze();
-				new testModel(this);
-//				new Result(this, ld);
-			}catch (FileNotFoundException e) {
-				JOptionPane.showMessageDialog(ld, "파일을 선택해주세요!");
-			} catch(IOException e) {
-				e.printStackTrace();				
-			}
+			runLog();
 			
 		}//if
 	
 	}//actionPerformed
 	
+	public void runLog() {
+		try {
+			logAnalyze();
+			new testModel(this);
+//			new Result(this, ld);
+		}catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(ld, "파일을 선택해주세요!");
+		} catch(IOException e) {
+			e.printStackTrace();				
+		}
+	}
 	
 	//파일선택 method
 	public void selectLogFile() {
@@ -151,6 +155,10 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				hourCount(fileContext);
 				if(lineCnt>=first && lineCnt<=last) {
 					maxKeysFromInput(fileContext);
+				}
+				else if(lineCnt>=first && last == 0) {
+					maxKeysFromInput(fileContext);
+					
 				}
 			}
 		}finally {
@@ -253,9 +261,6 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				maxCntKeyFromInput = keys;
 			}
 		}
-		System.out.println("최다 키: "+maxCntKeyFromInput);
-		System.out.println(cntFromInput.get(maxCntKeyFromInput)+"회");
-		
 	}
 
 	//getter
