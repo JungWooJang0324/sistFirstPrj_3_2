@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,17 +15,21 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
 import View.LogDialog;
+import View.Result;
+import View.testModel;
 
 
 public class DialogEvent extends WindowAdapter implements ActionListener {
 	private LogDialog ld;
 	private int first,last;
-	private int mode;
+	private String mode;
 	private int code200,code403,code404,code500;
 	//줄번호 
 	private int lineCnt;
@@ -38,6 +43,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private Map<String, Integer> countLang = new HashMap<String, Integer>();
 	private Map<String, Integer> browser = new HashMap<String, Integer>();
 	private Map<String, Integer> cntFromInput = new HashMap<String, Integer>();	
+	private Map<String, Integer> hourCnt = new HashMap<String, Integer>();	
 	private String maxCntKey;
 	private String maxCntKeyFromInput;
 	
@@ -103,7 +109,8 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		//View버튼 눌렸을때 
 		if(ae.getSource() == ld.getJbtnView()) {
 			selectLogFile();
-			
+			//new Result(this, ld);
+			new testModel(this);
 		}//if
 	
 	}//actionPerformed
@@ -137,22 +144,30 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	}//selectLogFile
 	
 	//로그파일 분석
-	public void logAnalyze() throws IOException {
-		@SuppressWarnings("resource")
-		BufferedReader br = new BufferedReader(new FileReader(filePath));
-		String fileContext="";
-		while((fileContext = br.readLine())!= null) {
-			lineCnt++;
-			keyLang(fileContext);
-			browserCnt(fileContext);
-			stateCount(fileContext);
-			hourCount(fileContext);
-			if(lineCnt>=first && lineCnt<=last) {
-				maxKeysFromInput(fileContext);
-			}
+	public void logAnalyze() throws IOException, FileNotFoundException {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(filePath));
 
+			String fileContext="";
+			while((fileContext = br.readLine())!= null) {
+				lineCnt++;
+				keyLang(fileContext);
+				browserCnt(fileContext);
+				stateCount(fileContext);
+				hourCount(fileContext);
+//				if(lineCnt>=first && lineCnt<=last) {
+//					maxKeysFromInput(fileContext);
+//				}
+//				System.out.println(lineCnt);
+			}
+		}finally {
+			if(br != null) {
+				br.close();
+			}
 		}
-	}
+		}
+	
 	
 	//키값=java... 구하기
 	public void keyLang(String fileContext) {
@@ -165,7 +180,6 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				}//if
 			}//for
 		}//if	
-		maxCntLang();
 	}
 	
 	//1 . 최대갯수 구하기
@@ -198,24 +212,22 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}
 		for(int i=0; i<browserCnt.length;i++) {
 			browserPercent[i] = (double)(browserCnt[i]*100)/maxCnt;
-			System.out.printf("%.2f\n", browserPercent[i]);
 		}
 	}	
 	//4.최다 사용시간
 	public void hourCount(String fileContext) {
-		//로그 시간구해 배열에 저장
-		int hour[]= {Integer.parseInt(fileContext.substring(fileContext.lastIndexOf("[")+1, fileContext.lastIndexOf("]")).substring(11,13))};
-		int[] index= {};
-		int max=Integer.MIN_VALUE;
+		String hour = fileContext.substring(fileContext.lastIndexOf("[") + 1, fileContext.lastIndexOf("]")).substring(11, 13);
+		hourCnt.put(hour, hourCnt.get(hour)!=null? hourCnt.get(hour)+1:1);
 		
-		//최다 시간 구하기
-		for(int i=0; i<hour.length;i++) {
-			index[hour[i]]++;
-		}
-		for(int i=0; i<index.length;i++) {
-			if(max<index[i]) {
-				max=index[i];
-				mode=i;
+		Set<String> setHour = hourCnt.keySet();
+		Iterator<String> iterator = setHour.iterator();
+		String hourKey = "";
+		int maxVal = 0;
+		while(iterator.hasNext()) {
+			hourKey = iterator.next();
+			if(hourCnt.get(hourKey) > maxVal) {
+				mode = hourKey;
+				maxVal = hourCnt.get(hourKey);
 			}
 		}
 	}
@@ -231,8 +243,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}else if(state==500) {
 			code500++;
 		}
-		code403pct=(state*100)/code403;
-		code500pct=(state*100)/code500;
+		
 	}
 	
 	//7 줄행의 수 중 최다키 구하기
@@ -266,7 +277,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	}
 
 	//최다 사용시간
-	public int getMode() {
+	public String getMode() {
 		return mode;
 	}
 
@@ -316,6 +327,14 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	//선택값에서 최대로 불린 키
 	public String getMaxCntKeyFromInput() {
 		return maxCntKeyFromInput;
+	}
+
+	public Map<String, Integer> getHourCnt() {
+		return hourCnt;
+	}
+
+	public String[] getBrowserList() {
+		return browserList;
 	}
 	
 	
