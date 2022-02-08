@@ -29,7 +29,7 @@ public class testModel extends JDialog{
 		System.out.println("500error :"+de.getCode500());
 		
 		//7번
-
+		System.out.println("선택된 줄의 최다키 : "+de.getMaxCntKeyFromInput());
 		System.out.println(de.getCntFromInput().get(de.getMaxCntKeyFromInput())+"회");
 		
 		
