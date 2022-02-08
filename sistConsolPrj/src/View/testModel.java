@@ -34,6 +34,12 @@ public class testModel extends JDialog{
 		System.out.println("500error :"+de.getCode403pct());
 		System.out.println("500error :"+de.getCode500pct());
 		
+<<<<<<< HEAD
+=======
+		//7번
+		System.out.println("선택된 줄의 최다키 : "+de.getMaxCntKeyFromInput());
+		System.out.println(de.getCntFromInput().get(de.getMaxCntKeyFromInput())+"회");
+>>>>>>> b2fe1a03429ccf9996654ab6b21ad5dc6d25dc1b
 		
 		//7��
 		System.out.println("�ִ�Ű : "+de.getMaxCntKeyFromInput());
