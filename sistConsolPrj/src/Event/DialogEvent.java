@@ -31,7 +31,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private int first,last;
 	private String mode;
 	private int code200,code403,code404,code500;
-	//ì¤„ë²ˆí˜¸ 
+	//ÁÙ¹øÈ£ 
 	private int lineCnt;
 	private double code403pct,code500pct;
 	private String filePath, fileName;
@@ -58,15 +58,15 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		//REPORT ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ
+		//REPORT ¹öÆ°ÀÌ ´­·ÈÀ» ¶§
 		if(ae.getSource()==ld.getJbtnReport()) {
-			//ì•„ì´ë””ê°€ rootë©´ ì˜¤ë¥˜ë©”ì„¸ì§€ ìƒì„±
-			if(ld.getGroa().equals("ê´€ë¦¬ì")) {
-				JOptionPane.showMessageDialog(ld,"ë¬¸ì„œë¥¼ ìƒì„±í•  ìˆ˜ ìˆëŠ” ê¶Œí•œì´ ì—†ìŒ");
+			//¾ÆÀÌµğ°¡ root¸é ¿À·ù¸Ş¼¼Áö »ı¼º
+			if(ld.getGroa().equals("°ü¸®ÀÚ")) {
+				JOptionPane.showMessageDialog(ld,"¹®¼­¸¦ »ı¼ºÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ¾øÀ½");
 			}else {
-				JOptionPane.showMessageDialog(ld,"íŒŒì¼ì´ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.");
+				JOptionPane.showMessageDialog(ld,"ÆÄÀÏÀÌ »ı¼ºµÇ¾ú½À´Ï´Ù.");
 				
-				//root ì´ì™¸ ì‚¬ìš©ìëŠ” í´ë” ë° íŒŒì¼ ìƒì„±
+				//root ÀÌ¿Ü »ç¿ëÀÚ´Â Æú´õ ¹× ÆÄÀÏ »ı¼º
 				File folder=new File("c:/dev/report/");
 				folder.mkdirs();
 				SimpleDateFormat sfm=new SimpleDateFormat("yyyyMMdd");
@@ -88,62 +88,55 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}//if
 		
 		
-		//LINE ë²„íŠ¼ì´ ëˆŒë ¸ì„ ë•Œ
+		//LINE ¹öÆ°ÀÌ ´­·ÈÀ» ¶§
 		if(ae.getSource()==ld.getJbtnLine() || ae.getSource()==ld.getJtxfLast()) {
 			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
+				selectLogFile();				
 			}			
 			if(ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first = 0;
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
+				selectLogFile();				
 			}			
 			if(ld.getJtxfLast().getText().isEmpty()) {
-				JOptionPane.showMessageDialog(ld, "ì°¾ìœ¼ì‹¤ ë§ˆì§€ë§‰ì¤„ì„ ì¨ì£¼ì„¸ìš”");
+				JOptionPane.showMessageDialog(ld, "Ã£À¸½Ç ¸¶Áö¸·ÁÙÀ» ½áÁÖ¼¼¿ä");
 			}//if
 			
-			selectLogFile();
 			
 		}//if
 		
-		//Viewë²„íŠ¼ ëˆŒë ¸ì„ë•Œ 
+		//View¹öÆ° ´­·ÈÀ»¶§ 
 		if(ae.getSource() == ld.getJbtnView()) {
-			selectLogFile();
-			//new Result(this, ld);
-			new testModel(this);
+			selectLogFile();	
+			try {
+				logAnalyze();
+				new testModel(this);
+//				new Result(this, ld);
+			}catch (FileNotFoundException e) {
+				JOptionPane.showMessageDialog(ld, "ÆÄÀÏÀ» ¼±ÅÃÇØÁÖ¼¼¿ä!");
+			} catch(IOException e) {
+				e.printStackTrace();				
+			}
+			
 		}//if
 	
 	}//actionPerformed
 	
 	
-	//íŒŒì¼ì„ íƒ method
+	//ÆÄÀÏ¼±ÅÃ method
 	public void selectLogFile() {
-		FileDialog fd = new FileDialog(ld, "logíŒŒì¼ ì„ íƒ", FileDialog.LOAD);
+		FileDialog fd = new FileDialog(ld, "logÆÄÀÏ ¼±ÅÃ", FileDialog.LOAD);
 		fd.setVisible(true);
 		
 		String selPath =  fd.getDirectory();
 		fileName = fd.getFile();
-		int lastFileidx;
-		
-		if(fileName == null) {
-			JOptionPane.showMessageDialog(fd, "íŒŒì¼ì„ ì„ íƒí•´ì£¼ì„¸ìš”");
-		}else {
-			lastFileidx = fileName.length();
-			if(fileName.substring(lastFileidx-4, lastFileidx).equals(".log")) {
-				//íŒŒì¼ ì„ íƒ
-				filePath = selPath+fileName;
-				try {
-					logAnalyze();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}else{
-				JOptionPane.showMessageDialog(fd, "ë¡œê·¸íŒŒì¼ì„ ì„ íƒí•´ ì£¼ì„¸ìš”.");
-			}
-		}
+		filePath = selPath+fileName;
+
 	}//selectLogFile
 	
-	//ë¡œê·¸íŒŒì¼ ë¶„ì„
+	//·Î±×ÆÄÀÏ ºĞ¼®
 	public void logAnalyze() throws IOException, FileNotFoundException {
 		BufferedReader br = null;
 		try {
@@ -156,10 +149,9 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				browserCnt(fileContext);
 				stateCount(fileContext);
 				hourCount(fileContext);
-//				if(lineCnt>=first && lineCnt<=last) {
-//					maxKeysFromInput(fileContext);
-//				}
-//				System.out.println(lineCnt);
+				if(lineCnt>=first && lineCnt<=last) {
+					maxKeysFromInput(fileContext);
+				}
 			}
 		}finally {
 			if(br != null) {
@@ -169,7 +161,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}
 	
 	
-	//í‚¤ê°’=java... êµ¬í•˜ê¸°
+	//Å°°ª=java... ±¸ÇÏ±â
 	public void keyLang(String fileContext) {
 		String key;
 		if(fileContext.contains("key")) {
@@ -183,7 +175,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		maxCntLang();
 	}
 	
-	//1 . ìµœëŒ€ê°¯ìˆ˜ êµ¬í•˜ê¸°
+	//1 . ÃÖ´ë°¹¼ö ±¸ÇÏ±â
 	public void maxCntLang() {
 		int maxVal = (Collections.max(countLang.values()));
 		for(String key: countLang.keySet()) {
@@ -194,7 +186,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}
 	}
 	
-	//2. ë¸Œë¼ìš°ì €ë³„ ì ‘ì†íšŸìˆ˜
+	//2. ºê¶ó¿ìÀúº° Á¢¼ÓÈ½¼ö
 	public void browserCnt(String fileContext) {
 		for(int i=0; i<browserList.length; i++) {
 			if(fileContext.contains(browserList[i])) {
@@ -205,7 +197,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		browserAnalyze();
 	}
 	
-	//2. ë¸Œë¼ìš°ì €ë³„ % í†µê³„
+	//2. ºê¶ó¿ìÀúº° % Åë°è
 	public void browserAnalyze() {
 		int maxCnt = 0;
 		for(int i=0; i<browserCnt.length; i++) {
@@ -215,7 +207,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 			browserPercent[i] = (double)(browserCnt[i]*100)/maxCnt;
 		}
 	}	
-	//4.ìµœë‹¤ ì‚¬ìš©ì‹œê°„
+	//4.ÃÖ´Ù »ç¿ë½Ã°£
 	public void hourCount(String fileContext) {
 		String hour = fileContext.substring(fileContext.lastIndexOf("[") + 1, fileContext.lastIndexOf("]")).substring(11, 13);
 		hourCnt.put(hour, hourCnt.get(hour)!=null? hourCnt.get(hour)+1:1);
@@ -232,7 +224,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 			}
 		}
 	}
-	//3.5.6. ì„œë¹„ìŠ¤ ìƒíƒœ íšŸìˆ˜êµ¬í•˜ê¸°
+	//3.5.6. ¼­ºñ½º »óÅÂ È½¼ö±¸ÇÏ±â
 	public void stateCount(String fileContext) {
 		int state= Integer.parseInt (fileContext.substring(fileContext.indexOf("[")+1, fileContext.indexOf("]")));
 		if(state==200) {
@@ -247,7 +239,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 	}
 	
-	//7 ì¤„í–‰ì˜ ìˆ˜ ì¤‘ ìµœë‹¤í‚¤ êµ¬í•˜ê¸°
+	//7 ÁÙÇàÀÇ ¼ö Áß ÃÖ´ÙÅ° ±¸ÇÏ±â
 	public void maxKeysFromInput(String fileContext) {
 		String key ="";
 		if(fileContext.contains("key")) {
@@ -261,23 +253,23 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				maxCntKeyFromInput = keys;
 			}
 		}
-		System.out.println("ìµœë‹¤ í‚¤: "+maxCntKeyFromInput);
-		System.out.println(cntFromInput.get(maxCntKeyFromInput)+"íšŒ");
+		System.out.println("ÃÖ´Ù Å°: "+maxCntKeyFromInput);
+		System.out.println(cntFromInput.get(maxCntKeyFromInput)+"È¸");
 		
 	}
 
 	//getter
-	//ì²«ë²ˆì§¸ ì…ë ¥ëœ ì¤„
+	//Ã¹¹øÂ° ÀÔ·ÂµÈ ÁÙ
 	public int getFirst() {
 		return first;
 	}
 	
-	//ë§ˆì§€ë§‰ì¤„
+	//¸¶Áö¸·ÁÙ
 	public int getLast() {
 		return last;
 	}
 
-	//ìµœë‹¤ ì‚¬ìš©ì‹œê°„
+	//ÃÖ´Ù »ç¿ë½Ã°£
 	public String getMode() {
 		return mode;
 	}
@@ -298,7 +290,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		return code500;
 	}
 	
-	//ì¤„ ê°¯ìˆ˜
+	//ÁÙ °¹¼ö
 	public int getLineCnt() {
 		return lineCnt;
 	}
@@ -311,21 +303,21 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		return code500pct;
 	}
 
-	//ë¸Œë¼ìš°ì €ë³„ í¼ì„¼íŠ¸ë¦¬ìŠ¤íŠ¸
+	//ºê¶ó¿ìÀúº° ÆÛ¼¾Æ®¸®½ºÆ®
 	public double[] getBrowserPercent() {
 		return browserPercent;
 	}
-	//ìš”ì²­ë°›ì€ ì²˜ìŒë¶€í„° ëê¹Œì§€
+	//¿äÃ»¹ŞÀº Ã³À½ºÎÅÍ ³¡±îÁö
 	public Map<String, Integer> getCntFromInput() {
 		return cntFromInput;
 	}
 	
-	//ìµœëŒ€ë¡œ ë¶ˆë¦° í‚¤
+	//ÃÖ´ë·Î ºÒ¸° Å°
 	public String getMaxCntKey() {
 		return maxCntKey;
 	}
 
-	//ì„ íƒê°’ì—ì„œ ìµœëŒ€ë¡œ ë¶ˆë¦° í‚¤
+	//¼±ÅÃ°ª¿¡¼­ ÃÖ´ë·Î ºÒ¸° Å°
 	public String getMaxCntKeyFromInput() {
 		return maxCntKeyFromInput;
 	}
@@ -343,6 +335,3 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	
 	
 }//class
-
-
-
