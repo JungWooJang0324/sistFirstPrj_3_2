@@ -9,26 +9,28 @@ public class testModel extends JDialog{
 	private DialogEvent  de;
 	public testModel(DialogEvent de) {
 		this.de = de;
+		//1ë²ˆ ì¶œë ¥
+		System.out.println("ìµœë‹¤í‚¤ : "+de.getMaxCntKey());
 		
-		//2¹øÃâ·Â
+		//2ë²ˆì¶œë ¥
 		for(int i=0; i<de.getBrowserPercent().length;i++) {
-			System.out.printf("ºê¶ó¿ìÀú:%s ÆÛ¼¾Æ®: %.2f\n",de.getBrowserList()[i],de.getBrowserPercent()[i]);
+			System.out.printf("ë¸Œë¼ìš°ì €:%s í¼ì„¼íŠ¸: %.2f\n",de.getBrowserList()[i],de.getBrowserPercent()[i]);
 		}
 		
-		//3¹ø Ãâ·Â
+		//3ë²ˆ ì¶œë ¥
 		System.out.println("200error : "+de.getCode200());
 		
-		//4¹ø Ãâ·Â
-		System.out.println("ÃÖ´Ù½Ã°£: "+de.getMode());
-		System.out.println("È½¼ö: "+de.getHourCnt().get(de.getMode()));
+		//4ë²ˆ ì¶œë ¥
+		System.out.println("ìµœë‹¤ì‹œê°„: "+de.getMode());
+		System.out.println("íšŸìˆ˜: "+de.getHourCnt().get(de.getMode()));
 		
-		//5,6¹ø
+		//5,6ë²ˆ
 		System.out.println("403error :"+de.getCode403());
 		System.out.println("500error :"+de.getCode500());
 		
-		//7¹ø
-		System.out.println("ÃÖ´ÙÅ° : "+de.getMaxCntKey());
-		System.out.println(de.getCntFromInput().get(de.getMaxCntKeyFromInput())+"È¸");
+		//7ë²ˆ
+
+		System.out.println(de.getCntFromInput().get(de.getMaxCntKeyFromInput())+"íšŒ");
 		
 		
 		}
