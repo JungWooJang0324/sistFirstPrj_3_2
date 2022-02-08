@@ -33,7 +33,8 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private int code200,code403,code404,code500;
 	//줄번호 
 	private int lineCnt;
-	private double code403pct,code500pct;
+	private int maxVal;
+	private String code403pct,code500pct;
 	private String filePath, fileName;
 	private String[] langList = {"mongodb","res","ora","javascript", "java","hadoop","jsp","d8","jk9k","front" };
 	private String[] browserList= {"opera", "ie", "firefox", "Chrome", "Safari" };
@@ -61,7 +62,10 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		//REPORT 버튼이 눌렸을 때
 		if(ae.getSource()==ld.getJbtnReport()) {
 			//아이디가 root면 오류메세지 생성
-			if(ld.getGroa().equals("관리자")) {
+			if(ae.getSource()!=ld.getJbtnLine()||ae.getSource()!=ld.getJtxfLast()) {
+				JOptionPane.showMessageDialog(ld,"LINE이나 VIEW버튼을 입력해주세요");				
+			}
+			else if(ld.getGroa().equals("관리자")) {
 				JOptionPane.showMessageDialog(ld,"문서를 생성할 수 있는 권한이 없음");
 			}else {
 				JOptionPane.showMessageDialog(ld,"파일이 생성되었습니다.");
@@ -78,7 +82,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				
 				try {
 					of=new FileWriter(outFile);
-					of.write("");
+					of.write(btnReport());
 					of.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -89,41 +93,45 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		
 		
 		//LINE 버튼이 눌렸을 때
-		if(ae.getSource()==ld.getJbtnLine() || ae.getSource()==ld.getJtxfLast()) {
+		if(ae.getSource()==ld.getJbtnLine() || ae.getActionCommand().equals("firLastInput")) {
 			if(!ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first=Integer.parseInt(ld.getJtxfFir().getText());
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
-				selectLogFile();				
+				selectLogFile();
+				runLog();
 			}			
 			if(ld.getJtxfFir().getText().isEmpty() && !ld.getJtxfLast().getText().isEmpty()) {
 				first = 0;
 				last=Integer.parseInt(ld.getJtxfLast().getText());				
 				selectLogFile();				
+				runLog();
 			}			
 			if(ld.getJtxfLast().getText().isEmpty()) {
 				JOptionPane.showMessageDialog(ld, "찾으실 마지막줄을 써주세요");
 			}//if
-			
 			
 		}//if
 		
 		//View버튼 눌렸을때 
 		if(ae.getSource() == ld.getJbtnView()) {
 			selectLogFile();	
-			try {
-				logAnalyze();
-				new testModel(this);
-//				new Result(this, ld);
-			}catch (FileNotFoundException e) {
-				JOptionPane.showMessageDialog(ld, "파일을 선택해주세요!");
-			} catch(IOException e) {
-				e.printStackTrace();				
-			}
+			runLog();
 			
 		}//if
 	
 	}//actionPerformed
 	
+	public void runLog() {
+		try {
+			logAnalyze();
+			new testModel(this);
+//			new Result(this, ld);
+		}catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(ld, "파일을 선택해주세요!");
+		} catch(IOException e) {
+			e.printStackTrace();				
+		}
+	}
 	
 	//파일선택 method
 	public void selectLogFile() {
@@ -150,6 +158,9 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				stateCount(fileContext);
 				hourCount(fileContext);
 				if(lineCnt>=first && lineCnt<=last) {
+					maxKeysFromInput(fileContext);
+				}
+				if(first==0 && last == 0) {
 					maxKeysFromInput(fileContext);
 				}
 			}
@@ -215,7 +226,7 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		Set<String> setHour = hourCnt.keySet();
 		Iterator<String> iterator = setHour.iterator();
 		String hourKey = "";
-		int maxVal = 0;
+		maxVal = 0;
 		while(iterator.hasNext()) {
 			hourKey = iterator.next();
 			if(hourCnt.get(hourKey) > maxVal) {
@@ -236,7 +247,8 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		}else if(state==500) {
 			code500++;
 		}
-		
+		code403pct= String.format("%4.2f", (code403 / (double)lineCnt) * 100);
+		code500pct= String.format("%4.2f", (code500 /(double)lineCnt) * 100);
 	}
 	
 	//7 줄행의 수 중 최다키 구하기
@@ -253,11 +265,36 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 				maxCntKeyFromInput = keys;
 			}
 		}
-		System.out.println("최다 키: "+maxCntKeyFromInput);
-		System.out.println(cntFromInput.get(maxCntKeyFromInput)+"회");
-		
 	}
+	
 
+
+	public String btnReport() {
+		
+	StringBuilder sb = new StringBuilder();
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	Date d = new Date();
+	String s = sdf.format(d);
+	sb.append("1. 최다 사용키: ").append(maxCntKey).append(" ").append(countLang.get(maxCntKey)).append("회\n");
+	sb.append("////////////////////////////////////////////\n");
+	sb.append("2. 브라우저별 접속 횟수와 비율 : \n");
+	sb.append("////////////////////////////////////////////\n");
+	for(int i=0; i<browserPercent.length; i++) {
+		sb.append(browserList[i]+" : "+browserCnt[i]+"회 ("+ String.format("%.2f", browserPercent[i])+"%)");
+	}
+	sb.append("////////////////////////////////////////////\n");
+	sb.append("3. 서비스를 성공적으로 수행한(200)횟수,실패(404) 횟수\n").append("성공 횟수(200) : ").append(code200+"번").append("\n실패 횟수(404) : ").append(code404+"번\n");
+	sb.append("////////////////////////////////////////////\n");
+	sb.append("4. 요청이 가장 많은 시간 \n").append(maxVal);
+	sb.append("////////////////////////////////////////////\n");
+	sb.append("5. 비정상적인 요청(403)이 발생한 횟수,비율구하기\n").append("비정상적인 요청 횟수(403):").append(code403+"번")
+	.append("\n비정상적인 요청 비율(403):").append(code403pct+"%");
+	sb.append("\n////////////////////////////////////////////\n");
+	sb.append("\n6. 요청에 대한 에러(500)가 발생한 횟수, 비율 구하기\n").append("요청에 대한 에러 횟수(500)").append(code500+"번")
+	.append("\n요청에 대한 에러 비율(500)").append(code500pct+"%");
+	
+	return sb.toString();
+}
 	//getter
 	//첫번째 입력된 줄
 	public int getFirst() {
@@ -295,11 +332,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		return lineCnt;
 	}
 
-	public double getCode403pct() {
+	public String getCode403pct() {
 		return code403pct;
 	}
 
-	public double getCode500pct() {
+	public String getCode500pct() {
 		return code500pct;
 	}
 
@@ -328,6 +365,10 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 
 	public String[] getBrowserList() {
 		return browserList;
+	}
+
+	public int[] getBrowserCnt() {
+		return browserCnt;
 	}
 	
 	
