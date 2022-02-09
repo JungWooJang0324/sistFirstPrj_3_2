@@ -12,7 +12,5 @@
 > ● 입력 라인에 해당하는 최다 사용 키의 이름과 횟수
 
 ## 결과물
-> 로그인 페이지
-> <img src="https://user-images.githubusercontent.com/93374409/153108438-a6ce4e78-333b-41f5-9546-29a2b66dcbf8.PNG" width="200" height=auto/>
-> 로그인 성공 시
-> <img src="https://user-images.githubusercontent.com/93374409/153108446-3e345649-d417-4cdd-af9f-1df871d8e8b4.PNG" width="200" height=auto/>
+> <img src="https://user-images.githubusercontent.com/93374409/153108438-a6ce4e78-333b-41f5-9546-29a2b66dcbf8.PNG" width="300" height=auto/>
+> <img src="https://user-images.githubusercontent.com/93374409/153108446-3e345649-d417-4cdd-af9f-1df871d8e8b4.PNG" width="300" height=auto/>
