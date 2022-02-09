@@ -12,5 +12,15 @@
 > ● 입력 라인에 해당하는 최다 사용 키의 이름과 횟수
 
 ## 결과물
-> <img src="https://user-images.githubusercontent.com/93374409/153108438-a6ce4e78-333b-41f5-9546-29a2b66dcbf8.PNG" width="300" height=auto/>
-> <img src="https://user-images.githubusercontent.com/93374409/153108446-3e345649-d417-4cdd-af9f-1df871d8e8b4.PNG" width="300" height=auto/>
+# 로그인
+<img src="https://user-images.githubusercontent.com/93374409/153108800-ace77860-be95-4684-b7d7-91b3cc21c621.PNG" width="400" height=auto/>
+<p>    </p>
+<img src="https://user-images.githubusercontent.com/93374409/153108805-55497a82-af61-4d73-bc3f-04effb08ba93.PNG" width="400" height=auto/>
+
+
+# 로그 다이얼로그
+<img src="https://user-images.githubusercontent.com/93374409/153108929-ee1e3660-cac7-4a20-a663-b90460a6991b.PNG" width="400" height=auto/>
+
+# 결과창 & 파일생성(Report)
+<img src="https://user-images.githubusercontent.com/93374409/153109039-fd2f8d89-cacb-486c-9684-9ece4fcb9173.PNG" width="400" height=auto/>
+<img src="https://user-images.githubusercontent.com/93374409/153109042-bdac3ec4-496a-400c-bfe1-33e28095cf48.PNG" height=auto/>
