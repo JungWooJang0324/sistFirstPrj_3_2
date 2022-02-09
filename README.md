@@ -16,6 +16,7 @@
 * 입력 라인에 해당하는 최다 사용 키의 이름과 횟수
 
 # 결과물
+-------------------
 ### 로그인
 <img src="https://user-images.githubusercontent.com/93374409/153108800-ace77860-be95-4684-b7d7-91b3cc21c621.PNG" width="300" height=auto/> <img src="https://user-images.githubusercontent.com/93374409/153108805-55497a82-af61-4d73-bc3f-04effb08ba93.PNG" width="300" height=auto/>
 
@@ -42,7 +43,7 @@
     * 일반사용자가 View를 선택하거나 Line을 선택해 정보를 읽어오면 그것을 C:/dev/report파일에 생성된 report_시간정보.txt파일로 저장됩니다.
     * View나 Line에서 정보를 읽어오지 못했다면 "View나 Line을 먼저 실행해주세요!" 메세지를 출력합니다.
     * 관리자 계정이라면 Report버튼의 접근권한이 없습니다.
-
+-------------------
 ### 결과창 & 파일생성(Report)
 <img src="https://user-images.githubusercontent.com/93374409/153109039-fd2f8d89-cacb-486c-9684-9ece4fcb9173.PNG" width="500" height=auto/> 
 <img src="https://user-images.githubusercontent.com/93374409/153109042-bdac3ec4-496a-400c-bfe1-33e28095cf48.PNG" width="300" height=auto/>
