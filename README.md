@@ -1,9 +1,9 @@
 ## 3조 로그분석 미니 프로젝트 sistFirstPrj_3_2
-<br/>
+
 # 사용 언어: Java
 * 제작기간: (2022.02.04~2022.02.11)
 
-<br/>
+
 # 3조 클래스 다이어그램
 <img src="https://user-images.githubusercontent.com/93374409/153107574-98923110-1017-4abd-b4f5-0315e0a750cb.png">
 
@@ -25,8 +25,7 @@
     * 로그인 성공시 "로그인 성공! ID님 환영합니다" 메세지 출력합니다.
 * Login 실패
     * 실패 시 "로그인 실패!" 메세지 출력 후 로그인창 재호출 출력합니다
-<br/>
-<hr>
+
 ### 로그 다이얼로그
 <img src="https://user-images.githubusercontent.com/93374409/153108929-ee1e3660-cac7-4a20-a663-b90460a6991b.PNG" width="400" height=auto/>
 
@@ -42,8 +41,7 @@
     * 일반사용자가 View를 선택하거나 Line을 선택해 정보를 읽어오면 그것을 C:/dev/report파일에 생성된 report_시간정보.txt파일로 저장됩니다.
     * View나 Line에서 정보를 읽어오지 못했다면 "View나 Line을 먼저 실행해주세요!" 메세지를 출력합니다.
     * 관리자 계정이라면 Report버튼의 접근권한이 없습니다.
-<br/>
-<hr>
+
 ### 결과창 & 파일생성(Report)
 <img src="https://user-images.githubusercontent.com/93374409/153109039-fd2f8d89-cacb-486c-9684-9ece4fcb9173.PNG" width="500" height=auto/> 
 <img src="https://user-images.githubusercontent.com/93374409/153109042-bdac3ec4-496a-400c-bfe1-33e28095cf48.PNG" width="300" height=auto/>
