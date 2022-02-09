@@ -1,4 +1,3 @@
 # sistFirstPrj_3_2
-
-<p>쌍용 3조 2번째 팀</p>
-하ㅣㅇ
+<h2>3조 클래스 다이어그램</h2>
+![prjDiagram](https://user-images.githubusercontent.com/93374409/153107408-f281b0ab-3831-4740-8906-404bc43f1531.png)
