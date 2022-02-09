@@ -20,4 +20,5 @@
 <img src="https://user-images.githubusercontent.com/93374409/153108929-ee1e3660-cac7-4a20-a663-b90460a6991b.PNG" width="400" height=auto/>
 
 # 결과창 & 파일생성(Report)
-<img src="https://user-images.githubusercontent.com/93374409/153109039-fd2f8d89-cacb-486c-9684-9ece4fcb9173.PNG" width="400" height=auto/> <img src="https://user-images.githubusercontent.com/93374409/153109042-bdac3ec4-496a-400c-bfe1-33e28095cf48.PNG" width="300" height=auto/>
+<img src="https://user-images.githubusercontent.com/93374409/153109039-fd2f8d89-cacb-486c-9684-9ece4fcb9173.PNG" width="500" height=auto/> 
+<img src="https://user-images.githubusercontent.com/93374409/153109042-bdac3ec4-496a-400c-bfe1-33e28095cf48.PNG" width="300" height=auto/>
