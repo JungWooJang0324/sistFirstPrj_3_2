@@ -5,12 +5,14 @@ import java.awt.FileDialog;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
 import Event.DialogEvent;
+import Event.ResultEvt;
 
 @SuppressWarnings("serial")
 public class Result extends JDialog {
@@ -54,6 +56,11 @@ public class Result extends JDialog {
 		JLabel code403 = new JLabel("5. 403error 발생횟수(%) :" + de.getCode403()+"회 ("+de.getCode403pct()+"%)");
 		JLabel code500 = new JLabel("6. 500error 발생횟수(%) :" + de.getCode500()+"회 ("+de.getCode500pct()+"%)");
 		JLabel inputMax = new JLabel("7. 선택된 줄의 최다키(횟수) : " + de.getMaxCntKeyFromInput()+" ("+de.getCntFromInput().get(de.getMaxCntKeyFromInput()) + "회)");
+		JButton confirm = new JButton("확인");
+		
+		ResultEvt revent = new ResultEvt(this);
+		addWindowListener(revent);
+		confirm.addActionListener(revent);
 		
 		setLayout(null);
 		add(jlblLine);
@@ -67,7 +74,8 @@ public class Result extends JDialog {
 		add(maxHour);
 		add(code403);
 		add(code500);
-		add( inputMax);
+		add(inputMax);
+		add(confirm);
 
 		jlblLine.setBounds(20,5,600,30);
 		jlblFileName.setBounds(20, 30, 200, 25);
@@ -81,8 +89,9 @@ public class Result extends JDialog {
 		code403.setBounds(20, 340, 200, 30);
 		code500.setBounds(20, 390, 200, 30);
 		inputMax.setBounds(20, 420, 400, 30);
+		confirm.setBounds(150, 470,100,40);
 		
-		setBounds(100, 100, 450, 600);
+		setBounds(100, 100, 430, 600);
 		setVisible(true);
 
 

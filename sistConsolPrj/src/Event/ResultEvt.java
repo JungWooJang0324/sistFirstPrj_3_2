@@ -15,6 +15,7 @@ public class ResultEvt extends WindowAdapter implements ActionListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		r.dispose();
 	}
 	@Override
 	public void windowClosing(WindowEvent e) {
