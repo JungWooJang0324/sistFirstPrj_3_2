@@ -4,8 +4,11 @@
 * 제작기간: (2022.02.04~2022.02.11)
 
 
-# 3조 클래스 다이어그램
+# 클래스 다이어그램
 <img src="https://user-images.githubusercontent.com/93374409/153107574-98923110-1017-4abd-b4f5-0315e0a750cb.png">
+
+# Flowchart
+<img src="https://user-images.githubusercontent.com/93374409/153200721-ee4d3bab-b9a7-42dc-9596-1b053ad78f86.png">
 
 # 필요한 정보 
 * 최다 사용 key의 이름, 횟수
