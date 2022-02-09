@@ -26,6 +26,7 @@
 * Login 실패
     * 실패 시 "로그인 실패!" 메세지 출력 후 로그인창 재호출 출력합니다
 
+-------------------
 ### 로그 다이얼로그
 <img src="https://user-images.githubusercontent.com/93374409/153108929-ee1e3660-cac7-4a20-a663-b90460a6991b.PNG" width="400" height=auto/>
 
