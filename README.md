@@ -5,7 +5,7 @@
 
 
 # 클래스 다이어그램
-<img src="https://user-images.githubusercontent.com/93374409/153107574-98923110-1017-4abd-b4f5-0315e0a750cb.png">
+<img src="https://user-images.githubusercontent.com/93374409/153323948-129369c6-8526-44cd-932b-9beba6dedbfe.png">
 
 # Flowchart
 <img src="https://user-images.githubusercontent.com/93374409/153200721-ee4d3bab-b9a7-42dc-9596-1b053ad78f86.png">
