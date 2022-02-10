@@ -39,11 +39,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	private String[] browserList= {"opera", "ie", "firefox", "Chrome", "Safari" };
 	private int[] cnt = new int[langList.length];
 	private int[] browserCnt = new int[browserList.length];
-	private double[] browserPercent = new double[browserList.length];	
 	private Map<String, Integer> countLang = new HashMap<String, Integer>();
 	private Map<String, Integer> browser = new HashMap<String, Integer>();
 	private Map<String, Integer> cntFromInput = new HashMap<String, Integer>();	
 	private Map<String, Integer> hourCnt = new HashMap<String, Integer>();	
+	private Map<String, String> browserPctMap;
 	private String maxCntKey;
 	private String maxCntKeyFromInput;
 	private boolean reportFlag;
@@ -212,12 +212,13 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	
 	//2. 브라우저별 % 통계
 	public void browserAnalyze() {
+		browserPctMap = new HashMap<String, String>();
 		int maxCnt = 0;
 		for(int i=0; i<browserCnt.length; i++) {
 			maxCnt+= browserCnt[i];
 		}
-		for(int i=0; i<browserCnt.length;i++) {
-			browserPercent[i] = (double)(browserCnt[i]*100)/maxCnt;
+		for(int i=0; i<browserList.length;i++) {
+			browserPctMap.put(browserList[i], String.format("%.2f", (double)(browserCnt[i]*100)/maxCnt));
 		}
 	}	
 	//4.최다 사용시간
@@ -280,8 +281,11 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		sb.append("1. 최다 사용키: ").append(maxCntKey).append(" ").append(countLang.get(maxCntKey)).append("회\n");
 		sb.append("\n");
 		sb.append("2. 브라우저별 접속 횟수와 비율 : \n");
-		for(int i=0; i<browserPercent.length; i++) {
-			sb.append(browserList[i]+" : "+browserCnt[i]+"회 ("+ String.format("%.2f", browserPercent[i])+"%) \n");
+		Set<String> set = browserPctMap.keySet();
+		Iterator<String> iter = set.iterator();
+		while(iter.hasNext()) {
+			String key = iter.next();
+			sb.append("\t"+key).append(" : ").append(browser.get(key)).append("번 (").append(browserPctMap.get(key)).append("%)\n");
 		}
 		sb.append("\n\n");
 		sb.append("3. 서비스를 성공적으로 수행한(200)횟수,실패(404) 횟수\n").append("성공 횟수(200) : ").append(code200+"번").append("\n실패 횟수(404) : ").append(code404+"번\n");
@@ -339,10 +343,6 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 		return code500pct;
 	}
 
-	//브라우저별 퍼센트리스트
-	public double[] getBrowserPercent() {
-		return browserPercent;
-	}
 	//요청받은 처음부터 끝까지
 	public Map<String, Integer> getCntFromInput() {
 		return cntFromInput;
@@ -373,6 +373,14 @@ public class DialogEvent extends WindowAdapter implements ActionListener {
 	public String getFileName() {
 		return fileName;
 	}
+
+	public Map<String, String> getBrowserPctMap() {
+		return browserPctMap;
+	}
+	public Map<String, Integer> getBrowser() {
+		return browser;
+	}
+
 	
 	//getters
 	
